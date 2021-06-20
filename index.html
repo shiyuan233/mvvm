@@ -6,25 +6,30 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
 </head>
 
 <body>
   <div id="app">
-    111{{ message }}111
+    <div>
+      你好{{message}}
+    </div>
+    <input v-model='message' type="text" name="" id="" />
   </div>
 </body>
-<script src="./index.js"></script>
+<script src="./index2.js"></script>
 <script>
   let Vue = new GVue({
     el: '#app',
     data: {
-      message: '测试数据'
+      message: '世界',
     }
   })
-  
-  setTimeout(() => {
-    Vue.$options.data.message = '小米'
-    }, 2000);
+  // console.log(Vue.$options.data.gsy)
+  // setTimeout(() => {
+  //   Vue.$options.data.message = 'xxx'
+  //   console.log(Vue.$options)
+  // }, 2000);
 </script>
 
 </html>

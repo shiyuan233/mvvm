@@ -7,33 +7,50 @@ class GVue extends EventTarget {
   }
 
   observer(data) {
-    Object.keys(data).forEach(item => {
-      this.bindWatch(data, item, data[item])
-    })
-  }
-  bindWatch(data, key, value) {
     let that = this;
-    Object.defineProperty(data, key, {
-      configurable: true,
-      enumerable: true,
-      get() {
-        console.log('get...')
-        return value
+    this.$options.data = new Proxy(data, {
+      get(target, key) {
+        return target[key];
       },
-      set(val) {
-        console.log('set...', val)
-        console.log(key)
+      set(target, key, newValue) {
         let event = new CustomEvent(key, {
           detail: {
-            value: val,
+            value: newValue,
             key,
           }
         })
         that.dispatchEvent(event);
-        value = val
+        target[key] = newValue;
+        return true;
       }
     })
+    // Object.keys(data).forEach(item => {
+    //   this.bindWatch(data, item, data[item])
+    // })
   }
+  // bindWatch(data, key, value) {
+  //   let that = this;
+  //   Object.defineProperty(data, key, {
+  //     configurable: true,
+  //     enumerable: true,
+  //     get() {
+  //       console.log('get...')
+  //       return value
+  //     },
+  //     set(val) {
+  //       console.log('set...', val)
+  //       console.log(key)
+  //       let event = new CustomEvent(key, {
+  //         detail: {
+  //           value: val,
+  //           key,
+  //         }
+  //       })
+  //       that.dispatchEvent(event);
+  //       value = val
+  //     }
+  //   })
+  // }
   compile(el) {
     let childNodes = el.childNodes
     childNodes.forEach(item => {
@@ -44,6 +61,7 @@ class GVue extends EventTarget {
             case 'v-model':
               item.value = this.$options.data[i.nodeValue]
               item.addEventListener('input', () => {
+                console.log(item.value, i.nodeValue,this);
                 this.$options.data[i.nodeValue] = item.value
               })
               break;
